@@ -45,22 +45,27 @@ def train_and_evaluate(config_path):
 
     ####################################################
 
-    lr = ElasticNet(alpha=alpha, l1_ratio=l1_ratio, random_state=random_state)
+    mlflow_config = config["mlflow_config"]
+    remote_server_uri = mlflow_config["remote_server_uri"]
+    mlflow.set_tracking_uri(remote_server_uri) 
 
-    lr.fit(train_x,train_y)
+    mlflow.set_experiment(mlflow_config["experiment_name"])
+    with mlflow.start_run(run_name=mlflow_config["run_name"]) as mlops_runs:
+        lr = ElasticNet(alpha=alpha, l1_ratio=l1_ratio, random_state=random_state)
+        lr.fit(train_x,train_y)
+        predicted_value = lr.predict(test_x)
+        (rmse, mae, r2) = eval_metrics(test_y, predicted_value)
 
-    predicted_value = lr.predict(test_x)
+        mlflow.log_param("alpha", alpha)
+        mlflow.log_param("l1_ration", l1_ratio)
 
-    (rmse, mae, r2) = eval_metrics(test_y, predicted_value)
+        mlflow.log_metric("rmse", rmse)
+        mlflow.log_metric("mae", mae)
+        mlflow.log_metric("r2", r2)
 
-    print("Elastic Model (alpha= %f, l1_ratio= %f):" %(alpha, l1_ratio))
-    print("RMSE:%s" %rmse)
-    print("MAE:%s" %mae)
-    print("R2_Score:%s" %r2)
+        tracking_uri_type_store = urlparse(mlflow.get_artifact_uri()).scheme
 
-    os.makedirs(model_dir, exist_ok=True)
-    model_path = os.path.join(model_dir, "model.joblib")
-    joblib.dump(lr, model_path)
+   
 
 
 if __name__=="__main__":
