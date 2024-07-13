@@ -17,13 +17,8 @@ split_data:
 estimators:
   ElasticNet:
     params:
-<<<<<<< HEAD
       alpha: 0.7
       l1_ratio: 0.9
-=======
-      alpha: 0.8
-      l1_ratio: 0.8
->>>>>>> 8cde3342e9c554c83df90cdd8716f408f9981049
 
 model_dir: models/models.joblib
 
