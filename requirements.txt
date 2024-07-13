@@ -1,8 +1,11 @@
 pandas 
 numpy
 jupyterlab
+<<<<<<< HEAD
 scikit-learn==1.3.2
 joblib
 mlflow
 Django
 psycopg2-binary
+=======
+>>>>>>> 8cde3342e9c554c83df90cdd8716f408f9981049
